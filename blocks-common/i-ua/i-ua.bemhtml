@@ -1,6 +1,9 @@
 block i-ua {
     tag: 'script',
     bem: false,
+    attrs: {
+        nonce: this.ctx.nonce || this['i-global'].nonce
+    },
     content: [
         ';(function(d,e,c,r){',
             'e=d.documentElement;',

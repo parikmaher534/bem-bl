@@ -7,6 +7,7 @@ block b-page {
                 {
                     elem: 'head',
                     content: [
+                        ctx.csp && this.extend(ctx.csp, {elem: 'csp'}),
                         {
                             elem: 'meta',
                             attrs: {
@@ -159,6 +160,9 @@ block b-page {
     elem css {
         bem: false,
         tag: 'style',
+        attrs: {
+            nonce: this.ctx.nonce || this['i-global'].nonce
+        },
 
         this.ctx.url {
             !this.ctx.ie, !this._notIE, default: {

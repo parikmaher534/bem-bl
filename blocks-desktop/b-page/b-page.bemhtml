@@ -19,6 +19,7 @@ block b-page {
                         {
                             elem: 'head',
                             content: [
+                                ctx.csp && this.extend(ctx.csp, {elem: 'csp'}),
                                 {
                                     tag: 'meta',
                                     attrs: { charset: 'utf-8' }

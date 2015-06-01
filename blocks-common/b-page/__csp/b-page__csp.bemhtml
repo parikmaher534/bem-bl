@@ -1,0 +1,73 @@
+block b-page, elem csp {
+
+    bem: false
+
+    tag: 'meta'
+
+    attrs: {
+        'http-equiv': 'Content-Security-Policy',
+        'content': Object.keys(this.ctx.policies).map(function(name) {
+            return name + ' ' + this.ctx.policies[name].join(' ') + ';';
+        }, this).join(' ')
+    }
+
+    default: {
+        var ctx = this.ctx,
+            nonce = ctx.nonce || this['i-global'].nonce,
+            defaultPolicies = {
+                'default-src': [
+                    "'self'", // Одинарные кавычки необходимы.
+                    'https://yastatic.net'
+                ],
+                'script-src': [
+                    "'self'",
+                    'https://yastatic.net',
+                    'yandex.ru',
+                    'mc.yandex.ru',
+                    'social.yandex.ru',
+                    'export.yandex.ru',
+                    'suggest.yandex.ru',
+                    'notifications.yandex.ru'
+                ],
+                'style-src': [
+                    "'self'",
+                    'https://yastatic.net',
+                    "'unsafe-inline'"
+                ],
+                'img-src': [
+                    "'self'",
+                    'https://yastatic.net',
+                    'data:',
+                    'awaps.yandex.ru',
+                    'kiks.yandex.ru',
+                    'mc.yandex.ru',
+                    'yabs.yandex.ru',
+                    'avatars.yandex.net',
+                    'www.tns-counter.ru',
+                    'clck.yandex.ru'
+                ],
+                'frame-src': [
+                    "'self'",
+                    'https://yastatic.net',
+                    'awaps.yandex.ru',
+                    'pass.yandex.ru',
+                    'legal.yandex.ru',
+                    'notifications.yandex.ru'
+                ],
+                'connect-src': [
+                    "'self'",
+                    'mc.yandex.ru'
+                ]
+            };
+
+        // Параметр nonce распространяется только на <script> и <style>.
+        // http://www.w3.org/TR/CSP/#script-src-the-nonce-attribute
+        if(nonce) {
+            defaultPolicies['script-src'].push("'nonce-" + nonce + "'");
+            defaultPolicies['style-src'].push("'nonce-" + nonce + "'");
+        }
+
+        ctx.policies = this.extend(defaultPolicies, ctx.policies);
+        applyNext();
+    }
+}
